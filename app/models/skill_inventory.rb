@@ -1,8 +1,12 @@
 require 'yaml/store'
-require_relative 'skill'
 class SkillInventory
+
   def self.database
-    @database ||= YAML::Store.new("db/skill_inventory")
+    if ENV["SKILL_INVENTORY_ENVIRONMENT"] == "test"
+      @database ||= YAML::Store.new("db/skill_inventory_test")
+    else
+      @database ||= YAML::Store.new("db/skill_inventory")
+    end
   end
 
   def self.create(skill)
@@ -42,10 +46,17 @@ class SkillInventory
       target["description"] = skill[:description]
     end
   end
+
   def self.delete(id)
     database.transaction do
       database['skills'].delete_if { |skill| skill["id"] == id }
     end
   end
 
+  def self.delete_all
+    database.transaction do
+      database['skills'] = []
+      database['total'] = 0
+    end
+  end
 end
