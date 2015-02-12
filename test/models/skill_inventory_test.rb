@@ -45,6 +45,13 @@ class SkillInventoryTest < ModelTest
   end
 
   def test_it_deletes_a_skill
+    create_three_skills
+    skill = SkillInventory
+    assert_equal 3, skill.all.count
+    refute_equal nil, skill.all[2]
+    skill.delete(2)
+    assert_equal 2, skill.all.count
+    assert_equal nil, skill.all[2]
   end
 end
 
