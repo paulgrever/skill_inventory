@@ -1,12 +1,3 @@
 ---
-skills:
-- id: 1
-  title: Ruby
-  description: Paul has learned alot of ruby!
-- id: 2
-  title: CSS
-  description: Paul is learning CSS
-- id: 3
-  title: HTML
-  description: Paul is learning HTML
-total: 3
+skills: []
+total: 0

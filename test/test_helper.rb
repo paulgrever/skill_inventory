@@ -11,3 +11,13 @@ class ModelTest < Minitest::Test
     SkillInventory.delete_all
   end
 end
+
+Capybara.app = SkillInventoryApp
+
+class FeatureTest < Minitest::Test
+  include Capybara::DSL
+
+  def teardown
+    SkillInventory.delete_all
+  end
+end
