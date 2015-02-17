@@ -17,4 +17,15 @@ class SkillInventoryApp < Sinatra::Base
   set :root, APP_ROOT.to_path
   set :views, File.join(SkillInventoryApp.root, "app", "views")
   set :public_folder, File.join(SkillInventoryApp.root, "app", "public")
+
+
+ configure :test do
+    set :database, File.join(SkillInventoryApp.root, "db", "skill_inventory_test.sqlite3")
+    set :environment, :test
+  end
+
+  configure :development do
+    set :database, File.join(SkillInventoryApp.root, "db", "skill_inventory.sqlite3")
+    set :environment, :development
+  end
 end

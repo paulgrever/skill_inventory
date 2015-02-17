@@ -1,38 +1,43 @@
-require 'yaml/store'
 class SkillInventory
 
   def self.database
     if ENV["SKILL_INVENTORY_ENVIRONMENT"] == "test"
-      @database ||= YAML::Store.new("db/skill_inventory_test")
+      @database ||= Sequel.sqlite('db/skill_inventory_test.sqlite3')
     else
-      @database ||= YAML::Store.new("db/skill_inventory")
+      @database ||= Sequel.sqlite('db/skill_inventory.sqlite3')
     end
   end
 
   def self.create(skill)
-    database.transaction do
-      database['skills'] ||= []
-      database['total'] ||= 0
-      database['total'] += 1
-      database['skills'] << { "id" => database['total'], "title" => skill[:title], "description" => skill[:description] }
-    end
+    dataset.insert({ :title => skill[:title], :description => skill[:description]})
+    # database.transaction do
+    #   database[:skills] ||= []
+    #   database[:total] ||= 0
+    #   database['total'] += 1
+    #   database['skills'] << { "id" => database['total'], "title" => skill[:title], "description" => skill[:description] }
+    # end
+  end
+
+  def self.dataset
+    database[:skills]
   end
 
   def self.raw_skills
-    database.transaction do
-      database["skills"] || []
-    end
+    dataset.to_a
+    # database.transaction do
+    #   database["skills"] || []
+    # end
   end
+
 
   def self.all
-    raw_skills.map { |data| Skill.new(data) }
+    raw_skills.map{ |data| Skill.new(data)}
+    # raw_skills.map { |data| Skill.new(data) }
   end
 
-  def self.find(id)
-  end
 
   def self.raw_skill(id)
-    raw_skills.find { |skill| skill["id"] == id }
+    raw_skills.find { |skill| skill[:id] == id }
   end
 
   def self.find(id)
@@ -40,23 +45,27 @@ class SkillInventory
   end
 
   def self.update(id, skill)
-    database.transaction do
-      target = database['skills'].find { |data| data["id"] == id }
-      target["title"] = skill[:title]
-      target["description"] = skill[:description]
-    end
+    row = dataset.where(:id => id)
+    row.update({:title => skill[:title], :description => skill[:description]})
+    # database.transaction do
+    #   target = database['skills'].find { |data| data["id"] == id }
+    #   target["title"] = skill[:title]
+    #   target["description"] = skill[:description]
+    # end
   end
 
   def self.delete(id)
-    database.transaction do
-      database['skills'].delete_if { |skill| skill["id"] == id }
-    end
+    dataset.where(:id => id).delete
+    # database.transaction do
+    #   database['skills'].delete_if { |skill| skill["id"] == id }
+    # end
   end
 
   def self.delete_all
-    database.transaction do
-      database['skills'] = []
-      database['total'] = 0
-    end
+    dataset.delete
+    # database.transaction do
+    #   database['skills'] = []
+    #   database['total'] = 0
+    # end
   end
 end

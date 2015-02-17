@@ -1,9 +1,9 @@
 class Skill
   attr_reader :id, :title, :description
 
-  def initialize(params)
-    @id = params["id"]
-    @title = params["title"]
-    @description = params["description"]
+  def initialize(data)
+    @id = data[:id]
+    @title = data[:title]
+    @description = data[:description]
   end
 end

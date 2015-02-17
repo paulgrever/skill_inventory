@@ -39,7 +39,7 @@ class SkillInventoryTest < ModelTest
     create_three_skills
     skill = SkillInventory
     assert_equal "a title 2", skill.all[1].title
-    skill.update(2, {:title => "RUBY", 
+        skill.update(2, {:title => "RUBY", 
                       :description => "RUBYYYY"})
     assert_equal "RUBY", skill.all[1].title
   end
